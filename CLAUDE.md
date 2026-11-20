@@ -20,6 +20,7 @@ All game logic lives in a single script, `game.js` (loaded by `index.html`, styl
 - **Rotation**: `rotateCW` + `tryRotate()` with horizontal wall kicks `[0,-1,1,-2,2]` (no SRS, no CCW).
 - **Scoring/levels**: `LINE_SCORES × level`; level = `floor(lines/10)+1`; `dropInterval = max(100, 1000 - (level-1)*90)` ms (set in `clearLines`). Soft drop +1/cell, hard drop +2/cell.
 - **Input**: single `keydown` listener (arrows, Up/X rotate, Space hard drop, P pause). Restart button re-calls `init`.
+- **Records** (`// ---- Récords ----` section in `game.js`): `records` = `{top: [{name, score, lines, level, date}], bestCombo, maxLines}` persisted in `localStorage['tetris-records']` (all access in try/catch, Top 5). The game does not auto-start: `showStartScreen()` shows `#start-overlay` (table + "Jugar"/"Borrar récords"); "Jugar" calls `init()`. `combo`/`maxCombo` are updated in `clearLines()`. `endGame()` calls `showGameOverRecords()` (table in `#overlay`, name form if the score qualifies). Names are rendered with `textContent`. The keydown listener ignores events targeting input/select/button.
 - **Rendering**: `draw()` renders grid, board, ghost (alpha 0.2 via `ghostY()`), and current piece on `#board`; `drawNext()` renders preview on `#next-canvas`. HUD is updated via `updateHUD()` writing to DOM elements by id.
 
 When adding DOM elements that `game.js` queries, ids must match those at the top of `game.js` (`board`, `next-canvas`, `score`, `lines`, `level`, `overlay`, `overlay-title`, `overlay-score`, `restart-btn`, `theme-toggle`, `theme-label`).
