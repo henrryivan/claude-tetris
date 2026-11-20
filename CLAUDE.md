@@ -22,4 +22,6 @@ All game logic lives in a single script, `game.js` (loaded by `index.html`, styl
 - **Input**: single `keydown` listener (arrows, Up/X rotate, Space hard drop, P pause). Restart button re-calls `init`.
 - **Rendering**: `draw()` renders grid, board, ghost (alpha 0.2 via `ghostY()`), and current piece on `#board`; `drawNext()` renders preview on `#next-canvas`. HUD is updated via `updateHUD()` writing to DOM elements by id.
 
-When adding DOM elements that `game.js` queries, ids must match those at the top of `game.js` (`board`, `next-canvas`, `score`, `lines`, `level`, `overlay`, `overlay-title`, `overlay-score`, `restart-btn`).
+When adding DOM elements that `game.js` queries, ids must match those at the top of `game.js` (`board`, `next-canvas`, `score`, `lines`, `level`, `overlay`, `overlay-title`, `overlay-score`, `restart-btn`, `theme-toggle`, `theme-label`).
+
+**Theming**: colors in `style.css` are CSS variables (`:root` = dark default, `[data-theme="light"]` = light). `applyTheme()` in `game.js` switches the theme, caches the grid color, picks the piece palette from `PALETTES`, and redraws. The choice is not persisted.
