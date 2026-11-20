@@ -41,6 +41,7 @@ const overlayScore = document.getElementById('overlay-score');
 const restartBtn = document.getElementById('restart-btn');
 const themeToggle = document.getElementById('theme-toggle');
 const themeLabel = document.getElementById('theme-label');
+const skinSelect = document.getElementById('skin-select');
 
 const PALETTES = {
   dark: [null, '#4dd0e1', '#ffd54f', '#ba68c8', '#81c784', '#e57373', '#ADD8E6', '#ffb74d'],
@@ -165,20 +166,132 @@ function updateHUD() {
   levelEl.textContent = level;
 }
 
+// ---- Skins ----
+const SKIN_KEY = 'tetris-skin';
+
+function blockPath(context, x, y, w, h, r) {
+  context.beginPath();
+  if (context.roundRect) {
+    context.roundRect(x, y, w, h, r);
+  } else {
+    context.moveTo(x + r, y);
+    context.arcTo(x + w, y, x + w, y + h, r);
+    context.arcTo(x + w, y + h, x, y + h, r);
+    context.arcTo(x, y + h, x, y, r);
+    context.arcTo(x, y, x + w, y, r);
+    context.closePath();
+  }
+}
+
+// palette null = usar PALETTES[theme] (retro respeta el tema claro/oscuro)
+// boardBg null = mantener el fondo CSS; gridColor null = usar el del tema
+const SKINS = {
+  retro: {
+    palette: null,
+    boardBg: null,
+    gridColor: null,
+    drawBlock(context, x, y, color, size) {
+      context.fillStyle = color;
+      context.fillRect(x * size + 1, y * size + 1, size - 2, size - 2);
+      context.fillStyle = 'rgba(255,255,255,0.12)';
+      context.fillRect(x * size + 1, y * size + 1, size - 2, 4);
+    },
+  },
+  neon: {
+    palette: [null, '#00f0ff', '#fff200', '#d500ff', '#39ff14', '#ff1744', '#2979ff', '#ff9100'],
+    boardBg: '#000000',
+    gridColor: '#14141c',
+    drawBlock(context, x, y, color, size) {
+      context.shadowColor = color;
+      context.shadowBlur = 12;
+      context.strokeStyle = color;
+      context.lineWidth = 2;
+      context.strokeRect(x * size + 3, y * size + 3, size - 6, size - 6);
+      context.shadowBlur = 0;
+      context.fillStyle = color;
+      context.globalAlpha *= 0.35;
+      context.fillRect(x * size + 3, y * size + 3, size - 6, size - 6);
+    },
+  },
+  pastel: {
+    palette: [null, '#a8e6ef', '#fff1a8', '#d7b8f0', '#b5ead7', '#ffb3ba', '#b5c9ff', '#ffd6a5'],
+    boardBg: '#fbf7fd',
+    gridColor: '#ece4f2',
+    drawBlock(context, x, y, color, size) {
+      const px = x * size + 2, py = y * size + 2, w = size - 4;
+      blockPath(context, px, py, w, w, size * 0.3);
+      context.fillStyle = color;
+      context.fill();
+      context.strokeStyle = 'rgba(255,255,255,0.7)';
+      context.lineWidth = 2;
+      blockPath(context, px + 3, py + 3, w - 6, w - 6, size * 0.2);
+      context.stroke();
+    },
+  },
+  pixel: {
+    palette: [null, '#29b6c8', '#e8b923', '#9c4fc0', '#4caf50', '#d84343', '#3f6fd8', '#e8832a'],
+    boardBg: '#15151f',
+    gridColor: '#202030',
+    drawBlock(context, x, y, color, size) {
+      const bx = x * size + 1, by = y * size + 1, w = size - 2;
+      const sq = Math.max(3, Math.round(size / 8));
+      context.fillStyle = color;
+      context.fillRect(bx, by, w, w);
+      for (let j = 0; j * sq < w; j++) {
+        for (let i = 0; i * sq < w; i++) {
+          context.fillStyle = (i + j) % 2 ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.2)';
+          context.fillRect(bx + i * sq, by + j * sq, Math.min(sq, w - i * sq), Math.min(sq, w - j * sq));
+        }
+      }
+      context.strokeStyle = 'rgba(0,0,0,0.6)';
+      context.lineWidth = 2;
+      context.strokeRect(bx + 1, by + 1, w - 2, w - 2);
+    },
+  },
+};
+let skin = 'retro';
+
+function skinPalette() {
+  return SKINS[skin].palette || PALETTES[theme] || COLORS;
+}
+
+function fillBoardBg(context, cnv) {
+  context.clearRect(0, 0, cnv.width, cnv.height);
+  const bg = SKINS[skin].boardBg;
+  if (bg) {
+    context.fillStyle = bg;
+    context.fillRect(0, 0, cnv.width, cnv.height);
+  }
+}
+
+function applySkin(name, persist = true) {
+  if (!SKINS[name]) name = 'retro';
+  skin = name;
+  skinSelect.value = name;
+  if (persist) {
+    try { localStorage.setItem(SKIN_KEY, name); } catch (e) { /* almacenamiento no disponible */ }
+  }
+  if (current && next) { draw(); drawNext(); }
+}
+
+function loadSkin() {
+  let saved = null;
+  try { saved = localStorage.getItem(SKIN_KEY); } catch (e) { /* ignorar */ }
+  applySkin(saved, false);
+}
+
 function drawBlock(context, x, y, colorIndex, size, alpha) {
   if (!colorIndex) return;
-  const color = (PALETTES[theme] || COLORS)[colorIndex];
+  context.save();
   context.globalAlpha = alpha ?? 1;
-  context.fillStyle = color;
-  context.fillRect(x * size + 1, y * size + 1, size - 2, size - 2);
-  // highlight
-  context.fillStyle = 'rgba(255,255,255,0.12)';
-  context.fillRect(x * size + 1, y * size + 1, size - 2, 4);
+  SKINS[skin].drawBlock(context, x, y, skinPalette()[colorIndex], size);
+  context.restore();
+  context.shadowBlur = 0;
   context.globalAlpha = 1;
 }
 
 function drawGrid() {
-  ctx.strokeStyle = gridColor;
+  ctx.strokeStyle = SKINS[skin].gridColor || gridColor;
   ctx.lineWidth = 0.5;
   for (let c = 1; c < COLS; c++) {
     ctx.beginPath();
@@ -195,7 +308,7 @@ function drawGrid() {
 }
 
 function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  fillBoardBg(ctx, canvas);
   drawGrid();
 
   // board
@@ -218,7 +331,7 @@ function draw() {
 
 function drawNext() {
   const NB = 30;
-  nextCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
+  fillBoardBg(nextCtx, nextCanvas);
   const shape = next.shape;
   const offX = Math.floor((4 - shape[0].length) / 2);
   const offY = Math.floor((4 - shape.length) / 2);
@@ -296,7 +409,7 @@ function init() {
 }
 
 document.addEventListener('keydown', e => {
-  if (e.target === themeToggle) return;
+  if (e.target === themeToggle || e.target === skinSelect) return;
   if (e.code === 'KeyP') { togglePause(); return; }
   if (paused || gameOver) return;
   switch (e.code) {
@@ -327,5 +440,11 @@ themeToggle.addEventListener('click', () => {
   themeToggle.blur();
 });
 
+skinSelect.addEventListener('change', () => {
+  applySkin(skinSelect.value);
+  skinSelect.blur();
+});
+
 applyTheme('dark');
+loadSkin();
 init();
