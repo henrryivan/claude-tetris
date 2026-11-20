@@ -96,4 +96,11 @@ jobs:
                **Preguntas abiertas / riesgos:** lo que haga falta aclarar.
                _Última actualización: fecha (issue abierto|editado)_
 
+            Formato: todo lo que publiques en el comentario (y en cualquier texto dirigido al issue)
+            debe estar en Markdown válido que GitHub (GitHub Flavored Markdown) renderice correctamente:
+            encabezados con `##`, negritas con `**`, listas con `-`, checklists con `- [ ]`,
+            código en línea con acentos graves y bloques de código con ``` indicando el lenguaje
+            (p. ej. ```js). Deja una línea en blanco entre bloques, no uses HTML innecesario y
+            asegúrate de cerrar todos los bloques de código.
+
             Restricciones: NO modifiques código del repositorio, NO abras PRs, NO cierres el issue.
