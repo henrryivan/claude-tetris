@@ -265,7 +265,7 @@ function fillBoardBg(context, cnv) {
 }
 
 function applySkin(name, persist = true) {
-  if (!SKINS[name]) name = 'retro';
+  if (!Object.prototype.hasOwnProperty.call(SKINS, name)) name = 'retro';
   skin = name;
   skinSelect.value = name;
   if (persist) {
@@ -286,8 +286,6 @@ function drawBlock(context, x, y, colorIndex, size, alpha) {
   context.globalAlpha = alpha ?? 1;
   SKINS[skin].drawBlock(context, x, y, skinPalette()[colorIndex], size);
   context.restore();
-  context.shadowBlur = 0;
-  context.globalAlpha = 1;
 }
 
 function drawGrid() {
@@ -409,6 +407,7 @@ function init() {
 }
 
 document.addEventListener('keydown', e => {
+  if (e.target === skinSelect && (e.code === 'Escape' || e.code === 'KeyP')) skinSelect.blur();
   if (e.target === themeToggle || e.target === skinSelect) return;
   if (e.code === 'KeyP') { togglePause(); return; }
   if (paused || gameOver) return;
@@ -440,6 +439,7 @@ themeToggle.addEventListener('click', () => {
   themeToggle.blur();
 });
 
+skinSelect.addEventListener('close', () => skinSelect.blur());
 skinSelect.addEventListener('change', () => {
   applySkin(skinSelect.value);
   skinSelect.blur();

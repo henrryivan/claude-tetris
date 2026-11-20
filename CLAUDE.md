@@ -22,8 +22,8 @@ All game logic lives in a single script, `game.js` (loaded by `index.html`, styl
 - **Input**: single `keydown` listener (arrows, Up/X rotate, Space hard drop, P pause). Restart button re-calls `init`.
 - **Rendering**: `draw()` renders grid, board, ghost (alpha 0.2 via `ghostY()`), and current piece on `#board`; `drawNext()` renders preview on `#next-canvas`. HUD is updated via `updateHUD()` writing to DOM elements by id.
 
-When adding DOM elements that `game.js` queries, ids must match those at the top of `game.js` (`board`, `next-canvas`, `score`, `lines`, `level`, `overlay`, `overlay-title`, `overlay-score`, `restart-btn`, `theme-toggle`, `theme-label`).
+When adding DOM elements that `game.js` queries, ids must match those at the top of `game.js` (`board`, `next-canvas`, `score`, `lines`, `level`, `overlay`, `overlay-title`, `overlay-score`, `restart-btn`, `theme-toggle`, `theme-label`, `skin-select`).
 
-**Theming**: colors in `style.css` are CSS variables (`:root` = dark default, `[data-theme="light"]` = light). `applyTheme()` in `game.js` switches the theme, caches the grid color, picks the piece palette from `PALETTES`, and redraws. The choice is not persisted.
+**Theming**: colors in `style.css` are CSS variables (`:root` = dark default, `[data-theme="light"]` = light). `applyTheme()` in `game.js` switches the theme, caches the grid color, keeps `PALETTES` for the retro skin (via `skinPalette()`), and redraws. The choice is not persisted.
 
 **Skins**: `SKINS` in `game.js` (`retro`, `neon`, `pastel`, `pixel`) each define `{ palette, boardBg, gridColor, drawBlock }`; `drawBlock()` delegates to the active skin. Retro uses `PALETTES[theme]` and the CSS board bg (`palette`/`boardBg`/`gridColor` null). `applySkin(name)` redraws without reload and persists to `localStorage` key `tetris-skin`; `<select id="skin-select">` drives it (keydown ignores it).
