@@ -39,7 +39,7 @@
             <li><kbd>↑</kbd> rotar</li>
             <li><kbd>↓</kbd> bajar</li>
             <li><kbd>Space</kbd> caída</li>
-            <li><kbd>P</kbd> pausa</li>
+            <li><kbd>P</kbd>/<kbd>Esc</kbd> pausa</li>
           </ul>
         </div>
 
@@ -60,6 +60,28 @@
         <button id="restart-btn">Reiniciar</button>
       </div>
     </div>
+
+    <div id="pause-overlay" class="overlay hidden" role="dialog" aria-label="Menú de pausa">
+      <div class="pause-box">
+        <p id="pause-title">PAUSA</p>
+        <button id="pause-resume" class="pause-item" type="button">Reanudar</button>
+        <button id="pause-restart" class="pause-item" type="button">Reiniciar</button>
+        <button id="pause-controls-btn" class="pause-item" type="button" aria-expanded="false" aria-controls="pause-controls">Ver controles</button>
+        <ul id="pause-controls" class="hidden">
+          <li><kbd>←</kbd><kbd>→</kbd> mover</li>
+          <li><kbd>↑</kbd>/<kbd>X</kbd> rotar</li>
+          <li><kbd>↓</kbd> bajar</li>
+          <li><kbd>Space</kbd> caída</li>
+          <li><kbd>P</kbd>/<kbd>Esc</kbd> pausa</li>
+        </ul>
+        <div id="start-level-row" class="pause-item pause-level" tabindex="0" role="spinbutton" aria-label="Nivel inicial" aria-valuemin="1" aria-valuemax="10" aria-valuenow="1">
+          <span>Nivel inicial</span>
+          <button id="start-level-dec" type="button" tabindex="-1" aria-label="Disminuir nivel">−</button>
+          <span id="start-level-value">1</span>
+          <button id="start-level-inc" type="button" tabindex="-1" aria-label="Aumentar nivel">+</button>
+        </div>
+        <p id="pause-hint">El nivel inicial aplica a la próxima partida (Reiniciar).</p>
+      </div>
   </div>
   </div>
 
