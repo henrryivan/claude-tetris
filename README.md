@@ -185,6 +185,10 @@ Algunos parámetros fáciles de tunear en `game.js`:
 
 ---
 
+## Skins visuales
+
+El selector **SKIN** del panel lateral cambia la apariencia sin recargar: Retro (por defecto), Neon (glow con `shadowBlur`), Pastel (bloques redondeados) y Pixel art (textura de cuadros). La elección se guarda en `localStorage` (`tetris-skin`).
+
 ## Licencia
 
 Proyecto de uso libre con fines educativos y de práctica.
