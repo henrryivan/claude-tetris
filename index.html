@@ -39,7 +39,7 @@
             <li><kbd>↑</kbd> rotar</li>
             <li><kbd>↓</kbd> bajar</li>
             <li><kbd>Space</kbd> caída</li>
-            <li><kbd>P</kbd> pausa</li>
+            <li><kbd>P</kbd>/<kbd>Esc</kbd> pausa</li>
           </ul>
         </div>
 
@@ -67,9 +67,46 @@
       <div class="overlay-box">
         <p id="overlay-title">GAME OVER</p>
         <p id="overlay-score"></p>
+        <div id="overlay-records" class="records hidden"></div>
+        <div id="record-form" class="record-form hidden">
+          <input id="record-name" type="text" maxlength="12" value="Jugador" aria-label="Nombre del jugador" autocomplete="off" />
+          <button id="record-save-btn" type="button">Guardar</button>
+        </div>
+        <p id="record-note"></p>
         <button id="restart-btn">Reiniciar</button>
       </div>
     </div>
+
+    <div id="start-overlay" class="overlay">
+      <div class="overlay-box">
+        <p id="start-title">TETRIS</p>
+        <p class="records-heading">TOP 5</p>
+        <div id="start-records" class="records"></div>
+        <button id="play-btn" type="button">Jugar</button>
+        <button id="reset-records-btn" type="button">Borrar récords</button>
+      </div>
+    </div>
+    <div id="pause-overlay" class="overlay hidden" role="dialog" aria-label="Menú de pausa">
+      <div class="pause-box">
+        <p id="pause-title">PAUSA</p>
+        <button id="pause-resume" class="pause-item" type="button">Reanudar</button>
+        <button id="pause-restart" class="pause-item" type="button">Reiniciar</button>
+        <button id="pause-controls-btn" class="pause-item" type="button" aria-expanded="false" aria-controls="pause-controls">Ver controles</button>
+        <ul id="pause-controls" class="hidden">
+          <li><kbd>←</kbd><kbd>→</kbd> mover</li>
+          <li><kbd>↑</kbd>/<kbd>X</kbd> rotar</li>
+          <li><kbd>↓</kbd> bajar</li>
+          <li><kbd>Space</kbd> caída</li>
+          <li><kbd>P</kbd>/<kbd>Esc</kbd> pausa</li>
+        </ul>
+        <div id="start-level-row" class="pause-item pause-level" tabindex="0" role="spinbutton" aria-label="Nivel inicial" aria-valuemin="1" aria-valuemax="10" aria-valuenow="1">
+          <span>Nivel inicial</span>
+          <button id="start-level-dec" type="button" tabindex="-1" aria-label="Disminuir nivel">−</button>
+          <span id="start-level-value">1</span>
+          <button id="start-level-inc" type="button" tabindex="-1" aria-label="Aumentar nivel">+</button>
+        </div>
+        <p id="pause-hint">El nivel inicial aplica a la próxima partida (Reiniciar).</p>
+      </div>
   </div>
   </div>
 
